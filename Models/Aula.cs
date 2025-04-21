@@ -9,6 +9,9 @@
         public string Tipo { get; set; } = "";
         public int ProfessorId { get; set; }
 
+        public List<PlanoAula> Planos { get; set; } = new();
+
+
         // Navegação
         public List<AulaHorario> Horarios { get; set; } = new();
     }

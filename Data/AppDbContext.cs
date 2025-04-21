@@ -14,6 +14,8 @@ namespace EscolaDanca.Api.Data
         public DbSet<Aula> Aulas { get; set; }
         public DbSet<AulaHorario> HorariosAulas { get; set; }
 
+        public DbSet<Plano> Planos { get; set; }
+        public DbSet<PlanoAula> PlanosAulas { get; set; }
 
     }
 }
