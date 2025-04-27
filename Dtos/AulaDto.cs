@@ -9,5 +9,7 @@
         public string Tipo { get; set; } = "";
         public string DiaSemana { get; set; } = "";
         public string Horario { get; set; } = "";
+        public int ProfessorId { get; set; }
+        public decimal ValorMensal { get; set; }
     }
 }

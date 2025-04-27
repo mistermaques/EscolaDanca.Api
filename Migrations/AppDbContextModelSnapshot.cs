@@ -22,6 +22,32 @@ namespace EscolaDanca.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("EscolaDanca.Api.Models.AlunoAula", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AulaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataAssinatura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AulaId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AlunosAulas");
+                });
+
             modelBuilder.Entity("EscolaDanca.Api.Models.Aula", b =>
                 {
                     b.Property<int>("Id")
@@ -48,6 +74,9 @@ namespace EscolaDanca.Api.Migrations
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ValorMensal")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -80,57 +109,6 @@ namespace EscolaDanca.Api.Migrations
                     b.ToTable("HorariosAulas");
                 });
 
-            modelBuilder.Entity("EscolaDanca.Api.Models.Plano", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("ValorMensal")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Planos");
-                });
-
-            modelBuilder.Entity("EscolaDanca.Api.Models.PlanoAula", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AulaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlanoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AulaId");
-
-                    b.HasIndex("PlanoId");
-
-                    b.ToTable("PlanosAulas");
-                });
-
             modelBuilder.Entity("EscolaDanca.Api.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -142,9 +120,6 @@ namespace EscolaDanca.Api.Migrations
                     b.Property<string>("Cpf")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DataAssinatura")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -161,9 +136,6 @@ namespace EscolaDanca.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PlanoId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("PrimeiroAcesso")
                         .HasColumnType("bit");
 
@@ -175,10 +147,6 @@ namespace EscolaDanca.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StatusPagamento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Telefone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -187,14 +155,57 @@ namespace EscolaDanca.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ValidadeAssinatura")
+                    b.HasKey("Id");
+
+                    b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("EscolaDanca.Api.Models.Usuario+UsuarioAula", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AulaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataAssinatura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ValidadeAssinatura")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlanoId");
+                    b.HasIndex("AulaId");
 
-                    b.ToTable("Usuarios");
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("UsuariosAulas");
+                });
+
+            modelBuilder.Entity("EscolaDanca.Api.Models.AlunoAula", b =>
+                {
+                    b.HasOne("EscolaDanca.Api.Models.Aula", "Aula")
+                        .WithMany()
+                        .HasForeignKey("AulaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EscolaDanca.Api.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Aula");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("EscolaDanca.Api.Models.AulaHorario", b =>
@@ -208,44 +219,33 @@ namespace EscolaDanca.Api.Migrations
                     b.Navigation("Aula");
                 });
 
-            modelBuilder.Entity("EscolaDanca.Api.Models.PlanoAula", b =>
+            modelBuilder.Entity("EscolaDanca.Api.Models.Usuario+UsuarioAula", b =>
                 {
                     b.HasOne("EscolaDanca.Api.Models.Aula", "Aula")
-                        .WithMany("Planos")
+                        .WithMany()
                         .HasForeignKey("AulaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EscolaDanca.Api.Models.Plano", "Plano")
-                        .WithMany("Aulas")
-                        .HasForeignKey("PlanoId")
+                    b.HasOne("EscolaDanca.Api.Models.Usuario", "Usuario")
+                        .WithMany("AulasAssinadas")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Aula");
 
-                    b.Navigation("Plano");
-                });
-
-            modelBuilder.Entity("EscolaDanca.Api.Models.Usuario", b =>
-                {
-                    b.HasOne("EscolaDanca.Api.Models.Plano", "Plano")
-                        .WithMany()
-                        .HasForeignKey("PlanoId");
-
-                    b.Navigation("Plano");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("EscolaDanca.Api.Models.Aula", b =>
                 {
                     b.Navigation("Horarios");
-
-                    b.Navigation("Planos");
                 });
 
-            modelBuilder.Entity("EscolaDanca.Api.Models.Plano", b =>
+            modelBuilder.Entity("EscolaDanca.Api.Models.Usuario", b =>
                 {
-                    b.Navigation("Aulas");
+                    b.Navigation("AulasAssinadas");
                 });
 #pragma warning restore 612, 618
         }

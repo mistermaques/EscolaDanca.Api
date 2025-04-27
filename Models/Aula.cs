@@ -8,8 +8,9 @@
         public string Nivel { get; set; } = "";
         public string Tipo { get; set; } = "";
         public int ProfessorId { get; set; }
+        public decimal ValorMensal {  get; set; }
 
-        public List<PlanoAula> Planos { get; set; } = new();
+        
 
 
         // Navegação

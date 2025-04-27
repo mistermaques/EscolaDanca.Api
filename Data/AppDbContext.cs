@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EscolaDanca.Api.Models;
+using static EscolaDanca.Api.Models.Usuario;
 
 
 
@@ -14,8 +15,9 @@ namespace EscolaDanca.Api.Data
         public DbSet<Aula> Aulas { get; set; }
         public DbSet<AulaHorario> HorariosAulas { get; set; }
 
-        public DbSet<Plano> Planos { get; set; }
-        public DbSet<PlanoAula> PlanosAulas { get; set; }
+        public DbSet<UsuarioAula> UsuariosAulas { get; set; }
+        public DbSet<AlunoAula> AlunosAulas { get; set; }
+
 
     }
 }

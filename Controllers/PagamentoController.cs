@@ -2,6 +2,9 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using EscolaDanca.Api.Data;
+using static System.Net.WebRequestMethods;
+using EscolaDanca.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EscolaDanca.Api.Controllers
 {
@@ -36,16 +39,19 @@ namespace EscolaDanca.Api.Controllers
                         unit_price = dto.Valor
                     }
                 },
-                external_reference = $"usuario_{dto.UsuarioId}|plano_{dto.PlanoId}",
+                external_reference = $"usuario_{dto.UsuarioId}|aula_{dto.AulaId}",
                 back_urls = new
                 {
-                    success = "https://seusite.com/pagamento-sucesso",
-                    failure = "https://seusite.com/pagamento-falha"
+                    success = $"https://c937-143-0-191-156.ngrok-free.app/visualizar-aula/{dto.AulaId}?status=sucesso",
+                    failure = $"https://c937-143-0-191-156.ngrok-free.app/visualizar-aula/{dto.AulaId}?status=erro",
+                    pending = $"https://c937-143-0-191-156.ngrok-free.app/visualizar-aula/{dto.AulaId}?status=pendente"
+
                 },
                 auto_return = "approved",
-                notification_url = "https://15e2-143-0-191-144.ngrok-free.app/api/pagamento/notificacao"
+                notification_url = "https://c937-143-0-191-156.ngrok-free.app/api/pagamento/notificacao"
 
             };
+            Console.WriteLine($"Payload Enviado: {JsonSerializer.Serialize(payload)}");
 
             var response = await client.PostAsJsonAsync("https://api.mercadopago.com/checkout/preferences", payload);
 
@@ -82,17 +88,37 @@ namespace EscolaDanca.Api.Controllers
                 {
                     var partes = externalRef.Split('|');
                     int usuarioId = int.Parse(partes[0].Replace("usuario_", ""));
-                    int planoId = int.Parse(partes[1].Replace("plano_", ""));
+                    int aulaId = int.Parse(partes[1].Replace("aula_", "").Replace("aula_", ""));
 
-                    var usuario = await _context.Usuarios.FindAsync(usuarioId);
-                    if (usuario != null)
+                    // Validação: verificar se o usuário e a aula existem no banco antes
+                    var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.Id == usuarioId);
+                    var aulaExiste = await _context.Aulas.AnyAsync(a => a.Id == aulaId);
+
+                    if (!usuarioExiste || !aulaExiste)
                     {
-                        usuario.PlanoId = planoId;
-                        usuario.StatusPagamento = "Pago";
-                        usuario.DataAssinatura = DateTime.UtcNow;
-                        usuario.ValidadeAssinatura = DateTime.UtcNow.AddMonths(1);
+                        Console.WriteLine($"⚠️ Usuário ID {usuarioId} ou Aula ID {aulaId} não encontrado.");
+                        return Ok(); // Retorna OK para o MercadoPago mesmo assim
+                    }
 
+                    var jaExiste = await _context.AlunosAulas
+                        .AnyAsync(aa => aa.UsuarioId == usuarioId && aa.AulaId == aulaId);
+
+                    if (!jaExiste)
+                    {
+                        var alunoAula = new AlunoAula
+                        {
+                            UsuarioId = usuarioId,
+                            AulaId = aulaId,
+                            DataAssinatura = DateTime.UtcNow
+                        };
+
+                        _context.AlunosAulas.Add(alunoAula);
                         await _context.SaveChangesAsync();
+                        Console.WriteLine($"Aluno {usuarioId} vinculado à aula {aulaId} com sucesso!");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Aluno {usuarioId} já está vinculado à aula {aulaId}.");
                     }
                 }
 
@@ -105,12 +131,12 @@ namespace EscolaDanca.Api.Controllers
             }
         }
     }
+} 
 
     public class PedidoPagamentoDto
     {
         public int UsuarioId { get; set; }
-        public int PlanoId { get; set; }
+        public int AulaId { get; set; } // 🔵 trocamos de PlanoId para AulaId
         public string Titulo { get; set; } = "";
         public decimal Valor { get; set; }
     }
-}

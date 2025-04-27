@@ -45,7 +45,7 @@ namespace EscolaDanca.Api.Controllers
                 PrimeiroAcesso = true,
                 TipoUsuario = dto.TipoUsuario,
                 Status = dto.Status,
-                PlanoId = dto.PlanoId, // pode ser nulo
+                //PlanoId = dto.PlanoId, // pode ser nulo
                 Cpf = dto.Cpf,
                 Telefone = dto.Telefone,
                 Endereco = dto.Endereco,
@@ -94,7 +94,7 @@ namespace EscolaDanca.Api.Controllers
                 Email = usuario.Email,
                 TipoUsuario = usuario.TipoUsuario,
                 Status = usuario.Status,
-                PlanoId = usuario.PlanoId,
+                //PlanoId = usuario.PlanoId,
                 Cpf = usuario.Cpf,
                 Telefone = usuario.Telefone,
                 Endereco = usuario.Endereco,
@@ -117,7 +117,7 @@ namespace EscolaDanca.Api.Controllers
             usuario.Email = dto.Email;
             usuario.TipoUsuario = dto.TipoUsuario;
             usuario.Status = dto.Status;
-            usuario.PlanoId = dto.PlanoId;
+            //usuario.PlanoId = dto.PlanoId;
             usuario.Cpf = dto.Cpf;
             usuario.Telefone = dto.Telefone;
             usuario.Endereco = dto.Endereco;
@@ -140,6 +140,22 @@ namespace EscolaDanca.Api.Controllers
 
             return Ok(new { mensagem = "Usuário excluído com sucesso." });
         }
+
+        [HttpGet("alunos")]
+        public async Task<ActionResult<List<UsuarioDto>>> ListarAlunos()
+        {
+            var alunos = await _context.Usuarios
+                .Where(u => u.TipoUsuario == "Aluno")
+                .Select(u => new UsuarioDto
+                {
+                    Id = u.Id,
+                    Nome = u.Name
+                })
+                .ToListAsync();
+
+            return Ok(alunos);
+        }
+
 
 
 

@@ -28,6 +28,7 @@ namespace EscolaDanca.Api.Controllers
                 Descricao = dto.Descricao,
                 Tipo = dto.Tipo,
                 ProfessorId = dto.ProfessorId,
+                ValorMensal = dto.ValorMensal,
                 Horarios = dto.HorariosPorDia.SelectMany(kvp =>
                     kvp.Value.Select(hora => new AulaHorario
                     {
@@ -45,9 +46,37 @@ namespace EscolaDanca.Api.Controllers
 
         // GET: api/aulas/listar
         [HttpGet("listar")]
-        public async Task<ActionResult<IEnumerable<Aula>>> Listar()
+        public async Task<ActionResult<IEnumerable<AulaDto>>> Listar()
         {
-            return await _context.Aulas.ToListAsync();
+            var aulas = await _context.Aulas
+                .Select(a => new AulaDto
+                {
+                    Id = a.Id,
+                    Nome = a.Nome,
+                    Descricao = a.Descricao,
+                    Nivel = a.Nivel,
+                    Tipo = a.Tipo,
+                    ProfessorId = a.ProfessorId,
+                    ValorMensal = a.ValorMensal
+                    // Não vamos preencher DiaSemana nem Horario aqui, fica vazio no DTO
+                })
+                .ToListAsync();
+
+            return Ok(aulas);
+        }
+        [HttpGet("{id}/alunos")]
+        public async Task<IActionResult> BuscarAlunosPorAula(int id)
+        {
+            var alunos = await _context.AlunosAulas
+                .Where(aa => aa.AulaId == id)
+                .Select(aa => new AlunoDto
+                {
+                    Id = aa.Usuario.Id,
+                    Nome = aa.Usuario.Name
+                })
+                .ToListAsync();
+
+            return Ok(alunos);
         }
 
         [HttpGet("horarios-ocupados")]
@@ -107,10 +136,12 @@ namespace EscolaDanca.Api.Controllers
 
             var dto = new
             {
+                aula.Id,
                 aula.Nome,
                 aula.Nivel,
                 aula.Tipo,
                 aula.Descricao,
+                aula.ValorMensal,
                 aula.ProfessorId,
                 HorariosPorDia = aula.Horarios
                     .GroupBy(h => h.DiaSemana)
@@ -136,6 +167,7 @@ namespace EscolaDanca.Api.Controllers
             aulaExistente.Tipo = dto.Tipo;
             aulaExistente.Descricao = dto.Descricao;
             aulaExistente.ProfessorId = dto.ProfessorId;
+            aulaExistente.ValorMensal = dto.ValorMensal;
 
             // Remove os horários antigos
             _context.HorariosAulas.RemoveRange(aulaExistente.Horarios);
@@ -156,7 +188,11 @@ namespace EscolaDanca.Api.Controllers
         }
 
 
-
+        public class AlunoDto
+        {
+            public int Id { get; set; }
+            public string Nome { get; set; } = string.Empty;
+        }
 
 
     }
