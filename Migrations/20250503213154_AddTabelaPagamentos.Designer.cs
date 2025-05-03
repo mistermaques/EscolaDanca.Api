@@ -4,6 +4,7 @@ using EscolaDanca.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EscolaDanca.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250503213154_AddTabelaPagamentos")]
+    partial class AddTabelaPagamentos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,39 +110,6 @@ namespace EscolaDanca.Api.Migrations
                     b.HasIndex("AulaId");
 
                     b.ToTable("HorariosAulas");
-                });
-
-            modelBuilder.Entity("EscolaDanca.Api.Models.Pagamento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AlunoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AulaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DataPagamento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MetodoPagamento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AlunoId");
-
-                    b.HasIndex("AulaId");
-
-                    b.ToTable("Pagamentos");
                 });
 
             modelBuilder.Entity("EscolaDanca.Api.Models.Usuario", b =>
@@ -248,25 +218,6 @@ namespace EscolaDanca.Api.Migrations
                         .HasForeignKey("AulaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Aula");
-                });
-
-            modelBuilder.Entity("EscolaDanca.Api.Models.Pagamento", b =>
-                {
-                    b.HasOne("EscolaDanca.Api.Models.Usuario", "Aluno")
-                        .WithMany()
-                        .HasForeignKey("AlunoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EscolaDanca.Api.Models.Aula", "Aula")
-                        .WithMany()
-                        .HasForeignKey("AulaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Aluno");
 
                     b.Navigation("Aula");
                 });

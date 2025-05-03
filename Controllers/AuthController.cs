@@ -70,7 +70,7 @@ namespace EscolaDanca.Api.Controllers
         }
 
 
-        // Mesma função que você já tinha em UsuariosController
+  
         private string GerarHash(string senha)
         {
             using var sha = SHA256.Create();

@@ -18,6 +18,9 @@ namespace EscolaDanca.Api.Data
         public DbSet<UsuarioAula> UsuariosAulas { get; set; }
         public DbSet<AlunoAula> AlunosAulas { get; set; }
 
+        public DbSet<Pagamento> Pagamentos { get; set; }
+
+
 
     }
 }

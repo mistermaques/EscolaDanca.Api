@@ -113,6 +113,19 @@ namespace EscolaDanca.Api.Controllers
                         };
 
                         _context.AlunosAulas.Add(alunoAula);
+                        // Registro do pagamento na nova tabela Pagamentos
+                        var pagamentoRegistro = new Pagamento
+                        {
+                            AlunoId = usuarioId,
+                            AulaId = aulaId,
+                            MetodoPagamento = pagamento.GetProperty("payment_method_id").GetString() ?? "desconhecido",
+                            Valor = pagamento.GetProperty("transaction_amount").GetDecimal(),
+                            DataPagamento = DateTime.UtcNow
+                        };
+
+                        _context.Pagamentos.Add(pagamentoRegistro);
+                        await _context.SaveChangesAsync();
+
                         await _context.SaveChangesAsync();
                         Console.WriteLine($"Aluno {usuarioId} vinculado à aula {aulaId} com sucesso!");
                     }
@@ -130,6 +143,18 @@ namespace EscolaDanca.Api.Controllers
                 return StatusCode(500, $"Erro ao processar notificação: {ex.Message}");
             }
         }
+
+        
+
+
+
+
+
+
+
+
+
+
     }
 } 
 
