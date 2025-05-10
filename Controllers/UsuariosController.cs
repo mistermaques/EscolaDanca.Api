@@ -39,7 +39,7 @@ namespace EscolaDanca.Api.Controllers
             // Cria o objeto de usuário
             var usuario = new Usuario
             {
-                Name = dto.Nome,
+                Name = dto.Name,
                 Email = dto.Email,
                 SenhaHash = senhaHash,
                 PrimeiroAcesso = true,
@@ -90,7 +90,7 @@ namespace EscolaDanca.Api.Controllers
 
             var dto = new UsuarioCadastroDto
             {
-                Nome = usuario.Name,
+                Name = usuario.Name,
                 Email = usuario.Email,
                 TipoUsuario = usuario.TipoUsuario,
                 Status = usuario.Status,
@@ -113,7 +113,7 @@ namespace EscolaDanca.Api.Controllers
                 return NotFound();
 
             // Atualiza os dados (exceto senha)
-            usuario.Name = dto.Nome;
+            usuario.Name = dto.Name;
             usuario.Email = dto.Email;
             usuario.TipoUsuario = dto.TipoUsuario;
             usuario.Status = dto.Status;

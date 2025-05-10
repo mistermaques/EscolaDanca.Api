@@ -1,4 +1,4 @@
-using EscolaDanca.Api.Data;
+﻿using EscolaDanca.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,12 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoPadrao")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient(); // habilita HttpClient via inje��o
+builder.Services.AddHttpClient(); // habilita HttpClient via injeção
 
 
 builder.Services.AddCors(options =>
@@ -70,6 +71,22 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    try
+    {
+        db.Database.OpenConnection(); // Testa a conexão com o PostgreSQL
+        Console.WriteLine(" Conexão com o PostgreSQL Railway funcionando!");
+        db.Database.CloseConnection();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("❌ Erro ao conectar com o banco de dados:");
+        Console.WriteLine(ex.Message);
+    }
+}
 
 app.MapControllers();
 

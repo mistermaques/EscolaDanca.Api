@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EscolaDanca.Api.Models;
-using static EscolaDanca.Api.Models.Usuario;
+
 
 
 
@@ -20,7 +20,18 @@ namespace EscolaDanca.Api.Data
 
         public DbSet<Pagamento> Pagamentos { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Usuario>().ToTable("usuarios");
+            modelBuilder.Entity<Pagamento>().ToTable("pagamentos");
+            modelBuilder.Entity<Aula>().ToTable("aulas");
+            modelBuilder.Entity<AulaHorario>().ToTable("aulahorarios");
+            modelBuilder.Entity<UsuarioAula>().ToTable("usuarioaula");
+            modelBuilder.Entity<AlunoAula>().ToTable("alunoaula");
+            // 👈 em minúsculo
+        }
 
 
     }
+
 }

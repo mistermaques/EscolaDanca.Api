@@ -2,25 +2,22 @@
 
 namespace EscolaDanca.Api.Models
 {
-    [Table("alunoaula")]
-    public class AlunoAula
+    [Table("usuarioaula")]
+    public class UsuarioAula
     {
         [Column("id")]
         public int Id { get; set; }
-
         [Column("usuarioid")]
         public int UsuarioId { get; set; }
-
-        [ForeignKey("UsuarioId")]
+        [ForeignKey("usuarioid")]
         public Usuario Usuario { get; set; } = null!;
-
         [Column("aulaid")]
         public int AulaId { get; set; }
-
-        [ForeignKey("AulaId")]
+        [ForeignKey("aulaid")]
         public Aula Aula { get; set; } = null!;
-
         [Column("dataassinatura")]
-        public DateTime DataAssinatura { get; set; } = DateTime.UtcNow;
+        public DateTime DataAssinatura { get; set; }
+        [Column("validadeassinatura")]
+        public DateTime ValidadeAssinatura { get; set; }
     }
 }

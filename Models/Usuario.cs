@@ -1,34 +1,42 @@
-﻿namespace EscolaDanca.Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EscolaDanca.Api.Models
 {
     public class Usuario
     {
+        [Column("id")]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string SenhaHash { get; set; }
-        public string TipoUsuario { get; set; } 
-        public string Status { get; set; }
 
-        public string Cpf { get; set; }
-        public string Telefone { get; set; }
-        public string Endereco { get; set; }
+        [Column("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [Column("email")]
+        public string Email { get; set; } = string.Empty;
+
+        [Column("senha_hash")]
+        public string SenhaHash { get; set; } = string.Empty;
+
+        [Column("tipo_usuario")]
+        public string TipoUsuario { get; set; } = string.Empty;
+
+        [Column("status")]
+        public string Status { get; set; } = string.Empty;
+
+        [Column("cpf")]
+        public string Cpf { get; set; } = string.Empty;
+
+        [Column("telefone")]
+        public string Telefone { get; set; } = string.Empty;
+
+        [Column("endereco")]
+        public string Endereco { get; set; } = string.Empty;
+
+        [Column("foto_url")]
         public string? FotoUrl { get; set; }
+
+        [Column("primeiro_acesso")]
         public bool PrimeiroAcesso { get; set; } = true;
+
         public List<UsuarioAula> AulasAssinadas { get; set; } = new();
-
-        public class UsuarioAula
-        {
-            public int Id { get; set; }
-
-            public int UsuarioId { get; set; }
-            public Usuario Usuario { get; set; } = null!;
-
-            public int AulaId { get; set; }
-            public Aula Aula { get; set; } = null!;
-
-            public DateTime DataAssinatura { get; set; }
-            public DateTime ValidadeAssinatura { get; set; }
-        }
-        
     }
 }

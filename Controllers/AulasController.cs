@@ -56,7 +56,7 @@ namespace EscolaDanca.Api.Controllers
                     Descricao = a.Descricao,
                     Nivel = a.Nivel,
                     Tipo = a.Tipo,
-                    ProfessorId = a.ProfessorId,
+                    ProfessorId = a.ProfessorId ?? 0,
                     ValorMensal = a.ValorMensal
                     // Não vamos preencher DiaSemana nem Horario aqui, fica vazio no DTO
                 })

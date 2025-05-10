@@ -2,7 +2,7 @@
 {
     public class UsuarioCadastroDto
     {
-        public string Nome { get; set; } = "";
+        public string Name { get; set; } = "";
         public string Email { get; set; } = "";
         public string Senha { get; set; } = ""; // será criptografada na API
         public string TipoUsuario { get; set; } = ""; // "Aluno", "Professor", etc.
